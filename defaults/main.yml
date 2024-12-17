@@ -1,0 +1,34 @@
+---
+domainname: "local"
+hostname: "xyz"
+adminname: admin
+adminpassword: "Newpassword123$"
+username: "newuser"
+userpassword: "newuserpassword"
+skip_check_prompts: false
+
+ca_helper_package:
+  - libnss3-tools
+
+certificate_urls: []
+apt:
+  - wget
+  - curl
+  - p7zip-full
+  - vlc
+  - rclone
+  - cifs-utils
+  - git
+  - filezilla
+  - flameshot
+  - wireguard
+  - flatpak
+
+flatpak_apps:
+  - {id: "org.mozilla.firefox", name: "Firefox"}
+  - {id: "com.bitwarden.desktop", name: "Bitwarden"}
+  - {id: "com.visualstudio.code", name: "VS Code"}
+  - {id: "com.getpostman.Postman", name: "Postman"}
+  - {id: "org.chromium.Chromium", name: "Chromium"}
+  - {id: "im.riot.Riot", name: "Element Desktop"}
+  - {id: "com.jetbrains.PhpStorm", name: "PhpStorm"}

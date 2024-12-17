@@ -1,0 +1,58 @@
+---
+- name: Prepare the Docker instance
+  hosts: all
+  remote_user: root
+  gather_facts: false
+
+  tasks:
+    - name: Install Python 3 (if not happened, yet)
+      ansible.builtin.raw: >
+        bash -c 'test -e /usr/bin/python3 ||
+        (apt -qqy update && apt install -qqy python3-minimal)'
+      register: output
+      changed_when: output.stdout != ""
+
+    - name: Set Python 3 as default
+      ansible.builtin.raw: >
+        bash -c 'test -e /usr/bin/python3 &&
+        update-alternatives --install /usr/bin/python
+        python /usr/bin/python3 99'
+      register: output
+      changed_when: output.stdout != ""
+
+    - name: Install Python standard version if none existing
+      ansible.builtin.raw: >
+        bash -c 'test -e /usr/bin/python ||
+        (apt -qqy update && apt install -qqy python-minimal)'
+      register: output
+      changed_when: output.stdout != ""
+
+    # NRS-2831 Python changed its behaviour regarding system packages
+    # and encourages to use venv https://peps.python.org/pep-0668/
+    - name: Install Python 3 venv module
+      ansible.builtin.raw: >
+        bash -c 'apt -qqy update &&
+        apt install --upgrade -qqy python3-venv python3-packaging'
+      register: venv_install
+      changed_when: >
+        venv_install.stdout.find(
+        '0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'
+        ) == -1
+
+    - name: Setup venv and update pip/setuptools
+      ansible.builtin.raw: >
+        bash -c 'python3 -m venv /opt/ansible-venv --upgrade-deps --upgrade'
+      register: upgrade_deps
+      changed_when: >
+        upgrade_deps.stdout.find("Successfully installed") != -1
+
+    - name: Ensure pip is installed in the virtual environment
+      ansible.builtin.raw: >
+        bash -c '/opt/ansible-venv/bin/python -m ensurepip --upgrade'
+      register: pip_installed
+      changed_when: pip_installed.stdout != ""
+
+    - name: Install sudo
+      ansible.builtin.apt:
+        name: sudo
+        state: present

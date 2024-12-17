@@ -1,0 +1,29 @@
+---
+- name: "Certificates | Download and install trusted CAs"
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "/tmp/{{ item | basename }}"
+    owner: "root"
+    mode: '0644'
+    validate_certs: false
+  loop: "{{ certificate_urls | default([]) }}"
+  notify: "Update CA certificates"
+
+- name: "CA helper package | Install libnss3-tools for certificate import"
+  ansible.builtin.package:
+    name: "{{ ca_helper_package | default('libnss3-tools') }}"
+    state: present
+
+- name: "CA import | Import downloaded CAs to browser certificate trust store"
+  ansible.builtin.script: files/cert_trust_store_installer.sh
+  args:
+    executable: /bin/bash
+  with_items: "{{ certificate_urls | default([]) }}"
+  loop_control:
+    loop_var: certificate_url
+    extended: true
+  environment:
+    CERTIFICATE_PATH: "/tmp/{{ certificate_url | basename }}"
+  when: certificate_urls | length > 0
+  become: true
+  changed_when: false

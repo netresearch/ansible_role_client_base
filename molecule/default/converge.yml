@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Testing role
+      ansible.builtin.include_role:
+        name: ansible_role_client_base

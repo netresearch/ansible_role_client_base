@@ -1,0 +1,4 @@
+---
+exclude_paths:
+  - site.yml
+  - tasks/linux/software.yml

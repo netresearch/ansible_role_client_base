@@ -1,0 +1,6 @@
+ansible
+molecule
+ansible-lint
+yamllint
+molecule-plugins[docker]
+passlib

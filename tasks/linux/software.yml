@@ -1,0 +1,29 @@
+---
+- name: Purge snapd package and dependencies
+  ansible.builtin.apt:
+    name: snapd
+    state: absent
+    purge: true
+
+- name: Install standard software
+  ansible.builtin.package:
+    name: "{{ apt }}"
+    state: present
+
+- name: Add Flathub repository if not already added
+  ansible.builtin.shell: |
+    /bin/bash -c 'set -o pipefail && \
+      flatpak remote-list | grep -q flathub || \
+      flatpak remote-add --if-not-exists \
+      flathub https://flathub.org/repo/flathub.flatpakrepo'
+  become: true
+  changed_when: false
+
+- name: Install flatpak applications
+  community.general.flatpak:
+    name: "{{ item.id }}"
+    state: present
+    remote: flathub
+  loop: "{{ flatpak_apps }}"
+  loop_control:
+    label: "{{ item.name }}"

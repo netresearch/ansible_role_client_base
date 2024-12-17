@@ -1,0 +1,12 @@
+---
+- name: Create Administrator Account
+  ansible.builtin.user:
+    name: "{{ adminname }}"
+    password: "{{ adminpassword | password_hash('sha512') }}"
+    groups:
+      - sudo
+    state: present
+    shell: /bin/bash
+    system: false
+    createhome: true
+    update_password: on_create

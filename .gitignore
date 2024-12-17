@@ -1,0 +1,7 @@
+*.retry
+.idea/
+.kitchen/
+*.vault_pass
+*.ssh_private_key
+*.key
+ansible-env/

@@ -1,0 +1,12 @@
+---
+- name: Create user account
+  ansible.builtin.user:
+   name: "{{ username }}"
+   password: "{{ userpassword | password_hash('sha512') }}"
+   groups:
+    - sudo
+   state: present
+   shell: /bin/bash       # Defaults to /bin/bash
+   system: "no"           # Defaults to no
+   createhome: "yes"      # Defaults to yes
+   update_password: on_create

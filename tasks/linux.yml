@@ -1,0 +1,20 @@
+---
+- name: Setup hostname
+  ansible.builtin.include_tasks:
+    file: linux/hostname.yml
+
+- name: Setup administrator account
+  ansible.builtin.include_tasks:
+    file: linux/adminaccount.yml
+
+- name: Setup user account
+  ansible.builtin.include_tasks:
+    file: linux/useraccount.yml
+
+- name: Install certificates
+  ansible.builtin.include_tasks:
+    file: linux/certificates.yml
+
+- name: Install software
+  ansible.builtin.include_tasks:
+    file: linux/software.yml

@@ -1,0 +1,14 @@
+---
+- name: Update CA certificates
+  ansible.builtin.command:
+    cmd: /usr/sbin/update-ca-certificates
+  register: result
+  changed_when: result.rc != 0
+
+- name: Restart udev and snapd services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - udev
+    - snapd

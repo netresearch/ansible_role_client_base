@@ -1,0 +1,34 @@
+---
+- name: This playbook applies the client-base role
+  hosts: all
+  become: true
+  remote_user: admin1
+  vars:
+    ansible_extra_ssh_args: "-o PasswordAuthentication=yes"
+    domainname:
+      - "local"
+    certificate_urls:
+      - "https://letsencrypt.org/certs/isrgrootx1.pem"
+
+  vars_prompt:
+    - name: hostname
+      prompt: "Please enter the iot-number of your Host"
+      default: "{{ hostname | default('default-hostname') }}"
+      private: false
+    - name: adminpassword
+      prompt: "Please enter a new administrator password"
+      confirm: true
+      private: true
+    - name: username
+      prompt: "Please enter a new username"
+      default: "{{ username | default('default-username') }}"
+      private: false
+    - name: userpassword
+      prompt: "Please enter a password for the new user"
+      confirm: true
+      private: true
+
+  tasks:
+    - name: Applying role
+      ansible.builtin.include_role:
+        name: ansible_role_client_base

@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Mikhail Sarnov <mikhail.sarnov@netresearch.de>
+  description: >
+    This Ansible role provides a base setup for Linux based client operating
+    systems.
+  license: BSD
+  min_ansible_version: "2.16.0"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+        - jammy
+  galaxy_tags: []
+  role_name: ansible_role_client_base
+  namespace: netresearch

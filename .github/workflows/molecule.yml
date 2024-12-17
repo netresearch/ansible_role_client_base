@@ -1,0 +1,52 @@
+---
+name: Molecule Tests and Linting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  molecule:
+    name: Run Molecule Tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: pip
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+      - run: ansible-playbook molecule/default/prepare.yml --syntax-check
+      - run: molecule test
+
+  lint:
+    name: Lint Ansible Role
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: pip
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+      - run: yamllint .
+      - run: ansible-lint .
