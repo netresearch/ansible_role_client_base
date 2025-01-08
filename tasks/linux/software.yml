@@ -1,10 +1,4 @@
 ---
-- name: Purge snapd package and dependencies
-  ansible.builtin.apt:
-    name: snapd
-    state: absent
-    purge: true
-
 - name: Install standard software
   ansible.builtin.package:
     name: "{{ apt }}"
@@ -18,6 +12,12 @@
       flathub https://flathub.org/repo/flathub.flatpakrepo'
   become: true
   changed_when: false
+
+- name: Install gnome-software-plugin-flatpak
+  ansible.builtin.package:
+    name: gnome-software-plugin-flatpak
+    state: present
+  become: true
 
 - name: Install flatpak applications
   community.general.flatpak:

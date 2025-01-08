@@ -3,7 +3,7 @@
 # do not fail while testing. see link above
 - name: "Hostname | Set hostname"
   ansible.builtin.hostname:
-    name: "{{ hostname }}.{{ domainname }}"
+    name: "{{ hostname }}"
   when: >
     ansible_facts.virtualization_type not in
     [
@@ -17,6 +17,6 @@
     dest: /etc/hosts
     regexp: '^127\.0\.1\.1'
     insertafter: '^127\.0\.0\.1[ \t]*'
-    line: '127.0.1.1  {{ hostname }}.{{ domainname }} {{ hostname }}'
+    line: '127.0.1.1  {{ hostname }}'
     state: present
     unsafe_writes: "{{ lookup('env', 'MOLECULE_FILE') is not none }}"
