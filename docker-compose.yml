@@ -1,3 +1,4 @@
+---
 services:
   ansible:
     image: ghcr.io/netresearch/ansible_role_client_base:latest
