@@ -1,0 +1,10 @@
+services:
+  ansible:
+    image: ghcr.io/netresearch/ansible_role_client_base:latest
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=false
+    volumes:
+      - ./site.yml:/site.yml
+    command: ansible-playbook /site.yml -i <your_target_machine_ip>, --ask-pass --ask-become-pass
+    stdin_open: true
+    tty: true
