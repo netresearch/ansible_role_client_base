@@ -29,6 +29,5 @@ flatpak_apps:
   - {id: "com.bitwarden.desktop", name: "Bitwarden"}
   - {id: "com.visualstudio.code", name: "VS Code"}
   - {id: "com.getpostman.Postman", name: "Postman"}
-  - {id: "org.chromium.Chromium", name: "Chromium"}
+  - {id: "com.google.Chrome", name: "Chrome"}
   - {id: "im.riot.Riot", name: "Element Desktop"}
-  - {id: "com.jetbrains.PhpStorm", name: "PhpStorm"}

@@ -51,14 +51,14 @@ You can apply the Ansible role directly on the target machine by running the pla
     git clone https://git.netresearch.de/provision/ansible_role_client_base.git
     ```
 
-2. Navigate to the directory containing your `site.yml` playbook:
+2. Navigate to the root of the project:
     ```bash
     cd ~/ansible_role_client_base
     ```
 
 3. Run the playbook locally to apply the `ansible_role_client_base` role to the target machine:
     ```bash
-    ansible-playbook site.yml
+    ansible-playbook example/site.yml
     ```
 
 ### 2. Apply the Role Remotely via SSH
@@ -69,7 +69,16 @@ You can apply the Ansible role directly on the target machine by running the pla
     sudo apt install sshpass python3
     pip install ansible git
     ```
-- The initial user account on the target Ubuntu machine should be **admin1**
+
+- **SSH server installed and configured on the target Ubuntu machine**:  
+    Ensure the `openssh-server` package is installed and running:
+    ```bash
+    sudo apt update
+    sudo apt install openssh-server
+    sudo systemctl enable --now ssh
+    ```
+
+- The initial user account on the target Ubuntu machine should be **admin**
 - Ensure that SSH password authentication is enabled on the target Ubuntu machine 
    ```bash
    sudo nano /etc/ssh/sshd_config
@@ -91,7 +100,7 @@ You can apply the Ansible role directly on the target machine by running the pla
     cd ~
     git clone https://github.com/netresearch/ansible_role_client_base
 
-2. Navigate to the directory containing your `site.yml` playbook:
+2. Navigate to the root of the project:
     ```bash
     cd ~/ansible_role_client_base
     ```
@@ -100,32 +109,44 @@ You can apply the Ansible role directly on the target machine by running the pla
 
 4. Run the playbook remotely by specifying the target machine's IP address or hostname in the `-i` option:
     ```bash
-    ansible-playbook site.yml -i <your_target_machine_ip> --ask-become-pass --ask-pass
+    ansible-playbook example/site.yml -i <your_target_machine_ip> --ask-become-pass --ask-pass
     ```
 
    Replace `your_target_machine_ip` with the actual IP or hostname of the target machine. 
    The `--ask-become-pass` flag will prompt you for the password if you are using `sudo` (become).
-   The `--ask-pass` flag will prompt you for **admin1** user password.
+   The `--ask-pass` flag will prompt you for **admin** user password.
 
    This will connect to the target machine over SSH and apply the role.
 
 ### 3. Container Usage
 
-An example playbook site.yml is included here for testing purposes. 
+An example `site.yml` and a `docker-compose.yml` file are included in the project for testing purposes. These files provide a ready-made template to quickly apply the Ansible role in a containerized environment. However, you must adjust the playbook and configuration to match your specific setup.
 
-The initial user account on the target Ubuntu machine should be **admin1**
+#### What you need to adjust:
+- **Hosts and Domains**: Modify the `hosts` section in `site.yml` to reflect the correct target machine IP or domain.
+- **Certificates**: If your playbook requires certificates, ensure the paths and files are correctly set up in the `site.yml`.
+- **Paths**: Ensure that any file paths in both `site.yml` and `docker-compose.yml` are correct for your project structure.
 
-To run the Ansible role from a Docker container, use the following command:
+The initial user account on the target Ubuntu machine should be **admin**
+
+#### To run the Ansible role from a Docker container:
+Use the following command to apply the Ansible role in a container:
 
 ```bash
 docker run -it -e ANSIBLE_HOST_KEY_CHECKING=false ghcr.io/netresearch/ansible_role_client_base:latest ansible-playbook site.yml -i <your_target_machine_ip>, --ask-pass --ask-become-pass
 
 ```
-   Replace `your_target_machine_ip` with the actual IP or hostname of the target machine. 
    The `--ask-become-pass` flag will prompt you for the password if you are using `sudo` (become).
-   The `--ask-pass` flag will prompt you for **admin1** user password.
+   The `--ask-pass` flag will prompt you for **admin** user password.
 
    This will connect to the target machine over SSH and apply the role.
+
+#### To run the Ansible role using Docker Compose
+Alternatively, you can use Docker Compose to run the Ansible playbook inside a container.
+
+```bash
+docker-compose run ansible
+```
 
 ## Testing
 

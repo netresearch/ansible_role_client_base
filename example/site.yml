@@ -2,7 +2,7 @@
 - name: This playbook applies the client-base role
   hosts: all
   become: true
-  remote_user: admin1
+  remote_user: admin
   vars:
     ansible_extra_ssh_args: "-o PasswordAuthentication=yes"
     domainname:

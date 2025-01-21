@@ -2,6 +2,9 @@
 roles:
   - src: geerlingguy.docker
   - src: geerlingguy.pip
+  - name: ansible_role_client_base
+    src: https://github.com/netresearch/ansible_role_client_base
+    version: main
 
 collections:
   - name: community.docker
