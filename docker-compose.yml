@@ -7,6 +7,6 @@ services:
       - ANSIBLE_HOST_KEY_CHECKING=false
     volumes:
       - ./example/site.yml:/site.yml
-    command: ansible-playbook /site.yml -i <your_target_machine_ip>, --ask-pass --ask-become-pass
+    command: ansible-playbook /site.yml -i <ip>, --ask-pass --ask-become-pass
     stdin_open: true
     tty: true
