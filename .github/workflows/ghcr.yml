@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@bb3eecaaf832752e6a3e352de3b1ff2d11194b49
+        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804
         # v5 https://github.com/docker/metadata-action/commit/
         # 369eb591f429131d6889c46b94e711f089e6ca96
         with:
