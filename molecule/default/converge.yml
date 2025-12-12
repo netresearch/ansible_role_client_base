@@ -3,6 +3,12 @@
   hosts: all
   become: true
   gather_facts: true
+  vars:
+    # Override flatpak_apps for CI testing - use minimal set to reduce disk usage
+    # Full list of apps (Firefox, Chrome, VS Code, etc.) would consume too much
+    # disk space in CI runners. A single small app validates the mechanism.
+    flatpak_apps:
+      - {id: "org.gnome.Calculator", name: "GNOME Calculator"}
   tasks:
     - name: Testing role
       ansible.builtin.include_role:
