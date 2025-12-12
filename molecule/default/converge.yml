@@ -4,9 +4,8 @@
   become: true
   gather_facts: true
   vars:
-    # Override flatpak_apps for CI testing - use minimal set to reduce disk usage
-    # Full list of apps (Firefox, Chrome, VS Code, etc.) would consume too much
-    # disk space in CI runners. A single small app validates the mechanism.
+    # Override flatpak_apps for CI - minimal set reduces disk usage.
+    # Full app list would consume too much space in CI runners.
     flatpak_apps:
       - {id: "org.gnome.Calculator", name: "GNOME Calculator"}
   tasks:
