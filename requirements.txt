@@ -4,3 +4,4 @@ ansible-lint
 yamllint
 molecule-plugins[docker]
 passlib
+cryptography>=46.0.5
