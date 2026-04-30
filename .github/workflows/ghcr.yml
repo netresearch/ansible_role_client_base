@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@4a8376e001c7725687f0624d1c3698a3f6ab337e
+        uses: docker/login-action@9f4a8ea54ed9055d5f86c993e1f2ffa674f98344
         # v3 https://github.com/docker/login-action/commit/
         # 9780b0c442fbb1117ed29e0efdff1e18412f7567
         with:
@@ -40,7 +40,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@deaa0dee567db6b95038c14152b037af85a8fe3b
+        uses: docker/metadata-action@4f5b5234679dfa19837d4942067c97d7df43b7b3
         # v5 https://github.com/docker/metadata-action/commit/
         # 369eb591f429131d6889c46b94e711f089e6ca96
         with:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Build and push Docker image
         id: push
-        uses: docker/build-push-action@c269a24fa28c26bf87ecef8c9ec22746dd962204
+        uses: docker/build-push-action@789f68658055d3ca993799b232b5c46dfe3f114d
         # v6 https://github.com/docker/build-push-action/commit/
         # 48aba3b46d1b1fec4febb7c5d0c644b249a11355
         with:
