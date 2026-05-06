@@ -1,5 +1,10 @@
 # Client-Base Ansible Role
 
+[![Molecule Tests and Linting](https://github.com/netresearch/ansible_role_client_base/actions/workflows/molecule.yml/badge.svg?branch=main)](https://github.com/netresearch/ansible_role_client_base/actions/workflows/molecule.yml)
+[![Build container image](https://github.com/netresearch/ansible_role_client_base/actions/workflows/ghcr.yml/badge.svg?branch=main)](https://github.com/netresearch/ansible_role_client_base/actions/workflows/ghcr.yml)
+[![Security](https://github.com/netresearch/ansible_role_client_base/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/netresearch/ansible_role_client_base/actions/workflows/security.yml)
+[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](LICENSE)
+
 This Ansible role provides a basic setup for Linux based clients.
 
 Currently supported platforms:
@@ -41,14 +46,15 @@ You can apply the Ansible role directly on the target machine by running the pla
 #### Prerequisites:
 - Install Git and Ansible on your local machine.
     ```bash
-    pip install git ansible
+    sudo apt install git python3-pip
+    pip install ansible
     ```
 
 #### Steps:
-1. Clone `ansible_role_client_base` - Gitlab token required
+1. Clone `ansible_role_client_base`
     ```bash
     cd ~
-    git clone https://git.netresearch.de/provision/ansible_role_client_base.git
+    git clone https://github.com/netresearch/ansible_role_client_base.git
     ```
 
 2. Navigate to the root of the project:
@@ -66,8 +72,8 @@ You can apply the Ansible role directly on the target machine by running the pla
 #### Prerequisites:
 - Ansible, git and sshpass installed on your local machine.
     ```bash
-    sudo apt install sshpass python3
-    pip install ansible git
+    sudo apt install git sshpass python3 python3-pip
+    pip install ansible
     ```
 
 - **SSH server installed and configured on the target Ubuntu machine**:  
@@ -271,10 +277,14 @@ A curated list of essential software for Ubuntu, categorized into **General Tool
    **Relevance**: A must-have for developers working with remote servers.
 
 6. **`docker`**  
- **Description:** Platform for developing, deploying, and managing containerized applications.  
-  **Relevance:** Crucial for developers working with microservices or containerized environments.  
-  **Note:** This role does not install Docker. It is recommended to use the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role to install Docker.
+   **Description:** Platform for developing, deploying, and managing containerized applications.  
+   **Relevance:** Crucial for developers working with microservices or containerized environments.  
+   **Note:** This role does not install Docker. It is recommended to use the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role to install Docker.
 
-8. **`wireguard`**  
+7. **`wireguard`**  
    **Description**: A modern, fast, and secure VPN protocol.  
    **Relevance**: Useful for developers needing secure remote access or networking.
+
+## License
+
+[BSD-3-Clause](LICENSE) — Copyright (c) 2024-present, Netresearch DTT GmbH and contributors.
