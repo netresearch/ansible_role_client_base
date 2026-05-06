@@ -44,10 +44,15 @@ Ansible >= 2.16.0
 You can apply the Ansible role directly on the target machine by running the playbook locally. Ensure that the target machine is accessible and the necessary dependencies are installed on the local machine.
 
 #### Prerequisites:
-- Install Git and Ansible on your local machine.
+- Install Git and Ansible on your local machine. On modern Ubuntu (24.04+),
+  installing Python packages globally is blocked by [PEP 668](https://peps.python.org/pep-0668/),
+  so install Ansible inside a virtual environment:
     ```bash
-    sudo apt install git python3-pip
-    pip install ansible
+    sudo apt install git python3-venv
+    python3 -m venv ~/ansible-env
+    source ~/ansible-env/bin/activate
+    pip install --upgrade pip
+    pip install 'ansible>=2.16'
     ```
 
 #### Steps:
@@ -70,10 +75,14 @@ You can apply the Ansible role directly on the target machine by running the pla
 ### 2. Apply the Role Remotely via SSH
 
 #### Prerequisites:
-- Ansible, git and sshpass installed on your local machine.
+- Ansible, git and sshpass installed on your local machine. As above,
+  install Ansible inside a virtual environment to avoid PEP 668:
     ```bash
-    sudo apt install git sshpass python3 python3-pip
-    pip install ansible
+    sudo apt install git sshpass python3-venv
+    python3 -m venv ~/ansible-env
+    source ~/ansible-env/bin/activate
+    pip install --upgrade pip
+    pip install 'ansible>=2.16'
     ```
 
 - **SSH server installed and configured on the target Ubuntu machine**:  
@@ -277,9 +286,9 @@ A curated list of essential software for Ubuntu, categorized into **General Tool
    **Relevance**: A must-have for developers working with remote servers.
 
 6. **`docker`**  
-   **Description:** Platform for developing, deploying, and managing containerized applications.  
-   **Relevance:** Crucial for developers working with microservices or containerized environments.  
-   **Note:** This role does not install Docker. It is recommended to use the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role to install Docker.
+   **Description**: Platform for developing, deploying, and managing containerized applications.  
+   **Relevance**: Crucial for developers working with microservices or containerized environments.  
+   **Note**: This role does not install Docker. It is recommended to use the [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) role to install Docker.
 
 7. **`wireguard`**  
    **Description**: A modern, fast, and secure VPN protocol.  
