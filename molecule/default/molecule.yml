@@ -13,7 +13,6 @@ platforms:
     image: geerlingguy/docker-ubuntu2404-ansible:latest
     privileged: true
     pre_build_image: true
-    cgroupns: host
     cgroupns_mode: host
     command: /lib/systemd/systemd
     volumes:
@@ -22,7 +21,6 @@ platforms:
     image: geerlingguy/docker-ubuntu2404-ansible:latest
     privileged: true
     pre_build_image: true
-    cgroupns: host
     cgroupns_mode: host
     command: /lib/systemd/systemd
     volumes:
