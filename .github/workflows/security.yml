@@ -19,14 +19,14 @@ jobs:
       contents: read
       pull-requests: write
 
-  pip-audit:
-    name: Python Dependency Audit
-    runs-on: ubuntu-latest
+  # pip-audit via the shared python-audit.yml reusable (pip). run-bandit is
+  # off to preserve the previous scope (pip-audit only); enable bandit
+  # separately once its findings are triaged.
+  audit:
+    uses: netresearch/.github/.github/workflows/python-audit.yml@main
     permissions:
       contents: read
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: '3.x'
-      - run: pip install pip-audit && pip-audit -r requirements.txt || pip-audit
+    with:
+      package-manager: pip
+      python-version: "3.x"
+      run-bandit: false

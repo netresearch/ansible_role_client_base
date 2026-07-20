@@ -9,51 +9,33 @@ on:
     branches:
       - main
 
+permissions: {}
+
 jobs:
+  # molecule test + ansible-lint + yamllint run through the org's shared
+  # reusable workflows in netresearch/.github, so the pinned action versions
+  # (checkout, setup-python) are maintained centrally instead of per-repo.
   molecule:
     name: Run Molecule Tests
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - name: Free disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
-          df -h
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: '3.x'
-          cache: pip
-      - name: Cache pip dependencies
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-      - run: ansible-playbook molecule/default/prepare.yml --syntax-check
-      - run: molecule test
+    uses: netresearch/.github/.github/workflows/ansible-molecule.yml@main
+    permissions:
+      contents: read
+    with:
+      runs-on: ubuntu-24.04
+      pip-packages: "-r requirements.txt"
+      command: test
 
   lint:
     name: Lint Ansible Role
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: '3.x'
-          cache: pip
-      - name: Cache pip dependencies
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-      - run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-      - run: yamllint .
-      - run: ansible-lint .
+    uses: netresearch/.github/.github/workflows/ansible-lint.yml@main
+    permissions:
+      contents: read
+    with:
+      runs-on: ubuntu-24.04
+      pip-packages: "-r requirements.txt"
+
+  yaml-lint:
+    name: Lint YAML
+    uses: netresearch/.github/.github/workflows/lint-yaml.yml@main
+    permissions:
+      contents: read
