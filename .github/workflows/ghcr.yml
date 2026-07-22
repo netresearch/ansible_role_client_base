@@ -12,50 +12,63 @@ on:
     branches:
       - 'main'
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+permissions: {}
 
 jobs:
-  build-and-push-image:
+  # The container build runs through the org's shared bake reusable, so the
+  # pinned action versions (checkout, buildx, metadata, login, bake) are
+  # maintained centrally in netresearch/.github instead of per-repo. The tag
+  # scheme still comes from docker/metadata-action — `metadata-images` makes
+  # the reusable run it and feed its generated tag/label bake files into the
+  # `docker-metadata-action` stub target of docker-bake.hcl.
+  build:
     name: Build image
-    runs-on: ubuntu-latest
+    uses: netresearch/.github/.github/workflows/build-container-bake.yml@main
     permissions:
       contents: read
       packages: write
-      attestations: write
+      security-events: write
       id-token: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    with:
+      targets: app
+      # REQUIRED whenever metadata-images is used: docker/bake-action would
+      # otherwise build from the git remote context, where metadata-action's
+      # $RUNNER_TEMP tag/label bake files do not exist.
+      bake-source: "."
+      push: ${{ github.event_name != 'pull_request' }}
+      metadata-images: ghcr.io/${{ github.repository }}
+      # docker/metadata-action's four default tag rules written out verbatim
+      # (an explicit list disables the implicit default), plus the
+      # unconditional `latest` the previous build-push-action step appended
+      # by hand.
+      metadata-tags: |
+        type=schedule
+        type=ref,event=branch
+        type=ref,event=tag
+        type=ref,event=pr
+        type=raw,value=latest
+      # This workflow has no `schedule` trigger, so workflow_dispatch is the
+      # only way to force a refresh of the `devture/ansible:latest` base
+      # image and its OS packages. With cache-from that run would restore the
+      # previous layer chain and rebuild nothing, so the cache is disabled
+      # for manual runs and used for push/PR runs.
+      cache: ${{ github.event_name != 'workflow_dispatch' }}
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Build and push Docker image
-        id: push
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.meta.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          labels: ${{ steps.meta.outputs.labels }}
-
-      - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
+  # GitHub-issued, Sigstore-signed SLSA build provenance — the successor of
+  # the removed actions/attest-build-provenance step. It lives in its own
+  # reusable because `attestations: write` must not be forced on every bake
+  # caller. Skipped on pull_request, where nothing is pushed and there is
+  # therefore no digest to attest.
+  attest:
+    name: Attest image provenance
+    needs: build
+    if: ${{ github.event_name != 'pull_request' }}
+    uses: netresearch/.github/.github/workflows/attest-image.yml@main
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+    with:
+      bake-metadata: ${{ needs.build.outputs.bake-metadata }}
+      push-to-registry: true
