@@ -9,6 +9,9 @@ on:
     branches:
       - main
   merge_group:
+  # A re-run executes the reusable workflows at the revision of the original
+  # run, so a fix to them in netresearch/.github needs a fresh run.
+  workflow_dispatch:
 
 permissions: {}
 
